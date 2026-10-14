@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const themeLabels = {
         'edge': 'Edge 原生',
         'dark-glass': '深色玻璃',
-        'modern-light': '浅色',
+        'modern-light': '浅色玻璃',
         'amoled': 'AMOLED',
         'chrome': '经典'
       };

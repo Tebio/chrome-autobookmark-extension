@@ -46,7 +46,69 @@
   // Attach shadow root
   const shadow = host.attachShadow({ mode: 'open' });
 
-  // Load stylesheet
+  // Critical CSS：content.css 以 <link> 异步加载，在其到位前 Shadow DOM 内
+  // 已插入的元素处于无样式状态——书签栏容器尚未隐藏（transform/opacity 未生效），
+  // 书签项与 favicon 按原始尺寸铺开。表现即"每次打开新页面书签栏闪现一遍再隐藏"
+  // 与"书签按钮渲染成一排方块"。先同步注入关键规则，使元素创建瞬间即被正确隐藏
+  // 与定位，彻底消除该 FOUC。这些规则与 content.css 中的同名规则取值一致，
+  // 不会产生冲突。
+  const criticalStyle = document.createElement('style');
+  criticalStyle.textContent = `
+    :host {
+      all: initial;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.4;
+      color-scheme: dark light;
+    }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+    .ab-trigger-zone {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 8px;
+      z-index: 2147483600;
+      pointer-events: auto;
+      background: transparent;
+    }
+    .ab-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 38px;
+      z-index: 2147483610;
+      pointer-events: none;
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    .ab-bar-container.ab-visible,
+    .ab-bar-container.ab-pinned {
+      transform: translate(0, 0) !important;
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+    .ab-context-menu,
+    .ab-modal-backdrop,
+    .ab-dropdown-portal,
+    .ab-submenu,
+    .ab-search-results-modal {
+      display: none;
+    }
+    .ab-toast {
+      opacity: 0;
+      pointer-events: none;
+    }
+  `;
+  shadow.appendChild(criticalStyle);
+
+  // Load full stylesheet (asynchronous, layered on top of the critical styles)
   const linkRel = document.createElement('link');
   linkRel.rel = 'stylesheet';
   linkRel.href = chrome.runtime.getURL('content.css');
