@@ -2177,13 +2177,34 @@
     itemsTrack.scrollBy({ left: 220, behavior: 'smooth' });
   });
 
-  // Mouse wheel horizontal scrolling over track
+  // Mouse wheel / trackpad horizontal scrolling over track
+  // 跟手三要素：
+  // 1) CSS 的 scroll-behavior: smooth 已移除，scrollLeft 赋值立即生效，无动画排队；
+  // 2) 同时接管水平手势(deltaX)与垂直滚轮(deltaY)，避免书签栏与页面双重滚动；
+  // 3) 兼容 deltaMode：0=像素(原样)、1=行(×40px 与系统原生一行一致)、2=页(×容器宽)。
   itemsTrack.addEventListener('wheel', (e) => {
-    if (e.deltaY !== 0) {
-      e.preventDefault();
-      itemsTrack.scrollLeft += e.deltaY;
-    }
+    const dx = e.deltaX;
+    const dy = e.deltaY;
+    if (dx === 0 && dy === 0) return;
+    e.preventDefault();
+    const modeMultiplier = e.deltaMode === 1 ? 40 : (e.deltaMode === 2 ? itemsTrack.clientWidth : 1);
+    const delta = (dx !== 0 ? dx : dy) * modeMultiplier;
+    itemsTrack.scrollLeft += delta;
   }, { passive: false });
+
+  // 滚动性能优化：毛玻璃(backdrop-filter)每帧重算是滚动卡顿主因。
+  // 滚动期间给 bar 挂 ab-scrolling class（CSS 中临时摘除模糊），
+  // 停止滚动 150ms 后移除，恢复毛玻璃效果。
+  let scrollStopTimer = 0;
+  itemsTrack.addEventListener('scroll', () => {
+    if (!bar.classList.contains('ab-scrolling')) {
+      bar.classList.add('ab-scrolling');
+    }
+    clearTimeout(scrollStopTimer);
+    scrollStopTimer = setTimeout(() => {
+      bar.classList.remove('ab-scrolling');
+    }, 150);
+  }, { passive: true });
 
   // Quick Search Functionality
   function openSearch() {
