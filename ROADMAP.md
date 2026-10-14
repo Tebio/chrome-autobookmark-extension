@@ -1,157 +1,87 @@
-# AutoBookmark — Roadmap & Release Milestones
+# AutoBookmark 智能书签栏 — 路线图与发布里程碑
 
-This document tracks completed milestones and outlines the planned features, enhancements, and architectural details for future updates to **AutoBookmark — by Sinary**.
-
----
-
-## ✅ Released in v1.2.0
-
-The following features and improvements were successfully implemented and shipped in **v1.2.0**:
-
-### 1. 🧭 4-Direction Edge Docking (Top, Bottom, Left, Right)
-- **Status**: ✅ **Shipped**
-- **Highlights**:
-  - 4-direction segmented control in the settings popup with live broadcast to all open tabs.
-  - Full-screen edge detection and responsive auto-reveal/hide triggers.
-
-### 2. 📐 Vertical Sidebar Dock Mode (`Left` / `Right`)
-- **Status**: ✅ **Shipped**
-- **Highlights**:
-  - Dedicated `210px` vertical dock layout with `100vh` height.
-  - Integrated header actions, full-width search bar, and vertical bookmark track.
-  - Cohesive borders and soft depth shadows across all 4 themes.
-
-### 3. ✨ Horizontal Flyout Portals
-- **Status**: ✅ **Shipped**
-- **Highlights**:
-  - Folder dropdowns and search modals fly out towards the screen center flush against the sidebar.
-  - Viewport-aware vertical clamping preventing overflow off-screen.
-
-### 4. 🎯 Vertical Drag-and-Drop
-- **Status**: ✅ **Shipped**
-- **Highlights**:
-  - Vertical `clientY` item boundary calculation for bookmark reordering on sidebars.
-  - Clean horizontal drop line guideline indicators.
-
-### 5. ➕ One-Click "Add Current Tab"
-- **Status**: ✅ **Shipped**
-- **Highlights**:
-  - Dedicated quick-add button in header controls with checkmark transition and toast feedback.
-  - In-dropdown action button to bookmark the active page directly into any target folder.
-  - Context menu option: **"Bookmark Current Tab Here"**.
-
-### 6. 📂 "Open All in Tabs" for Folders
-- **Status**: ✅ **Shipped**
-- **Highlights**:
-  - Right-click context menu option: **"Open All in Tabs (N)"** with active link count.
-  - Middle-click (<kbd>auxclick</kbd>) on folder chips and subfolders to batch-open all links in background tabs.
+本文档记录 AutoBookmark 智能书签栏（Tebio 汉化 / 去广告 / Edge 主题分支）的关键里程碑与未来计划。
 
 ---
 
-## 📦 Released in v1.1.0
+## ✅ v1.3.0（当前版本）
 
-The following features and improvements were successfully implemented and shipped in **v1.1.0**:
+本版本是对原 AutoBookmark 项目的本地化与体验优化版本，核心改动如下：
 
-### 1. 🔀 Drag-and-Drop Bookmark Organization
-- **Status**: ✅ **Shipped**
-- **Highlights**:
-  - Reorder bookmarks on the bar, within folder dropdowns, and inside nested submenus.
-  - Drop bookmarks directly into folders with hover highlight activation.
-  - Live animated insertion guidelines showing exact drop position.
-  - Robust index boundary calculations for top, middle, and bottom drops.
+### 1. 🌏 全面汉化
+- 弹出设置面板、右键菜单、模态框、Toast 提示、工具提示、搜索占位符等全部转为简体中文。
+- 仓库文档（README、ROADMAP、隐私政策）全部重写为中文。
 
-### 2. ✏️ Edit Bookmarks & Rename Folders
-- **Status**: ✅ **Shipped**
-- **Highlights**:
-  - Right-click context menu option: **"Edit Bookmark..."** / **"Rename Folder..."**.
-  - Glassmorphic modal editor for titles and URLs with auto-protocol prefixing (`https://`).
-  - Real-time synchronization with `chrome.bookmarks.update`.
+### 2. 🚫 去除广告与品牌推广
+- 移除书签栏上的品牌按钮。
+- 移除弹出窗口中的徽标、开发者卡片、页脚外链。
+- 删除品牌图标资源。
+- 版本检查与下载链接统一指向本 Fork 仓库。
 
-### 3. 🗑️ Delete Bookmarks & Folders
-- **Status**: ✅ **Shipped**
-- **Highlights**:
-  - Right-click context menu option: **"Delete Bookmark"** / **"Delete Folder"**.
-  - Safety confirmation modal dialog.
-  - Recursive folder removal (`chrome.bookmarks.removeTree`) for non-empty folders.
+### 3. 🎨 新增 Edge 原生主题
+- 默认主题：背景 `#DDDFE2`、文字 `#373839`、高亮 `#0B5CAD`。
+- 覆盖书签栏、下拉菜单、子菜单、右键菜单、模态框、搜索面板、Toast 等全部组件。
+- 弹出窗口同步支持 5 款主题切换。
 
-### 4. 📁 Seamless Multi-Level Subfolders
-- **Status**: ✅ **Shipped**
-- **Highlights**:
-  - Deep nested subfolder navigation.
-  - Connected concave fillet wings with seamless zero-gap attachment.
-  - Smart hover de-escalation closing submenus when moving to regular links or bar controls.
+### 4. 🚀 触发卡顿与卡手优化
+- 全局 `mousemove` 使用 `requestAnimationFrame` 节流，每帧最多执行一次。
+- 隐藏定时器仅在状态变化时重新设置，避免每次鼠标移动都重置。
+- 显示后增加宽限期，快速滑过边缘时不会立刻隐藏。
+- 搜索输入 150ms 防抖，并丢弃过期响应。
+- 拖拽期间延迟刷新书签列表，拖拽结束后再重新渲染，避免频繁 DOM 重排。
+- 禁用时立即停止触发区的点击拦截并立即隐藏书签栏。
 
-### 5. 🛡️ Stacking Order & Context Menu Engine
-- **Status**: ✅ **Shipped**
-- **Highlights**:
-  - Stratified Shadow DOM z-index tiers (`contextMenu`: `2147483646 !important`, `modal`: `2147483647 !important`).
-  - Dynamic submenu z-indexes and DOM re-parenting ensuring context menus are never occluded by subfolder portals.
-  - Interaction guards preventing dropdowns and submenus from closing prematurely while using context menus.
+### 5. 🔗 默认设置调整
+- 默认主题改为 `edge`。
+- 版本检查 API 指向 `Tebio/chrome-autobookmark-extension`。
 
 ---
 
-## 🎯 Target Version: v1.3.0+ (Upcoming Roadmap)
+## ✅ 更早版本（v1.2.0 及以前）
 
-### 1. 📁 "+ New Folder" In-Place Creation
-- **Feature**: Fast folder creation directly from the bar and inside dropdowns.
-- **UI / UX**:
-  - `+ New Folder` action button in the bar's header and inside dropdown menus.
-  - Glassmorphic modal to enter folder name and select target location.
-- **Technical Implementation**:
-  - `chrome.bookmarks.create({ parentId, title })`.
+原 AutoBookmark 项目已实现的功能在本分支中全部保留：
+
+- v1.2.0：四向边缘停靠、竖向侧边栏模式、水平飞出菜单、竖向拖拽排序、一键收藏当前页、文件夹批量打开。
+- v1.1.0：拖拽整理、原地编辑 / 重命名、删除确认、多级子文件夹、层级堆叠管理。
+- v1.0.0：自动隐藏悬浮书签栏、Shadow DOM 隔离、多主题、跨浏览器支持。
 
 ---
 
-### 2. 🔢 Folder Bookmark Count Badges
-- **Feature**: Subtle badge counter showing the number of bookmarks stored within each folder.
-- **UI / UX**:
-  - Lightweight pill counter next to folder titles (e.g. `Dev (14)`, `Reading (5)`).
-  - Can be toggled on/off in the Settings popup.
+## 🎯 未来计划（v1.4.0+）
+
+以下功能可能会在后续版本中实现，按优先级排列：
+
+### 1. 📁 原地新建文件夹
+- 在书签栏头部或文件夹下拉菜单中提供「新建文件夹」按钮。
+- 弹出轻量输入框，快速创建并指定目标位置。
+
+### 2. 🔢 文件夹书签计数徽标
+- 在文件夹名称旁显示内部书签数量（如 `开发 (14)`）。
+- 可在设置中开启或关闭。
+
+### 3. ⌨️ 全局聚焦搜索
+- 按 `Alt + B` 唤出书签栏后，自动聚焦搜索框。
+- 支持上下方向键选择、`Enter` 打开。
+
+### 4. 🧹 重复 / 失效书签清理
+- 在弹出窗口新增「书签健康」面板，扫描重复或失效链接并批量清理。
+
+### 5. 💾 一键导出 / 导入
+- 支持将书签结构导出为 JSON / HTML，便于备份与迁移。
 
 ---
 
-### 3. ⌨️ Global Spotlight & Quick-Search Launcher (`Alt + B`)
-- **Feature**: Hotkey to instantly summon the bar and focus search without using the mouse.
-- **UI / UX**:
-  - Press <kbd>Alt + B</kbd> to reveal the bar and focus the search bar immediately.
-  - Arrow key (<kbd>↑</kbd> / <kbd>↓</kbd>) navigation and <kbd>Enter</kbd> to launch.
-- **Technical Implementation**:
-  - `chrome.commands` shortcut listener + shadow root keyboard event trap.
+## 🏗️ 技术架构与权限
+
+- **所需权限**：`bookmarks`、`storage`、`favicon`、`activeTab`、`<all_urls>`。
+- **隔离性**：所有 UI 组件均封装在 Shadow DOM 中，避免与宿主网页 CSS 冲突。
+- **隐私性**：所有数据在本地处理，不上传任何个人信息或浏览记录。
 
 ---
 
-### 4. 🎨 Custom Accent Color & Glow Customizer
-- **Feature**: Let users choose their preferred glow and active indicator color.
-- **UI / UX**:
-  - Accent palette in Settings popup: Neon Cyan (Default), Violet, Emerald, Amber, Sakura Pink, and custom hex input.
+## 💬 反馈与贡献
 
----
+如有建议或问题，请通过以下方式提交：
 
-### 5. 🧹 Duplicate & Broken Link Cleaner
-- **Feature**: Health scan tool to identify duplicate bookmarks and empty folders.
-- **UI / UX**:
-  - "Bookmark Health" tab in the Settings popup with 1-click batch cleanup.
-
----
-
-### 6. 💾 One-Click Backup & Export (JSON / HTML)
-- **Feature**: Export and restore your complete bookmark structure.
-- **UI / UX**:
-  - Settings popup option to download an instant JSON/HTML backup file and restore anytime.
-
----
-
-## 🏗️ Technical Architecture & Permissions
-
-- **Permissions**:  
-  All features remain fully supported under existing `"permissions": ["bookmarks", "storage"]` in Manifest V3. No intrusive permissions required.
-- **Isolation**:  
-  All new UI components remain 100% encapsulated inside the extension's Shadow DOM to prevent any CSS conflicts with host websites.
-
----
-
-## 💬 Community Feedback & Contributions
-
-Suggestions, ideas, and feature requests can be submitted via:
-- **GitHub Issues**: [https://github.com/sinaryorg/chrome-autobookmark-extension/issues](https://github.com/sinaryorg/chrome-autobookmark-extension/issues)
-- **Website**: [https://sinary.org](https://sinary.org)
+- **GitHub Issues**：[https://github.com/Tebio/chrome-autobookmark-extension/issues](https://github.com/Tebio/chrome-autobookmark-extension/issues)
+- **Fork 仓库**：[https://github.com/Tebio/chrome-autobookmark-extension](https://github.com/Tebio/chrome-autobookmark-extension)

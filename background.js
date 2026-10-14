@@ -4,7 +4,7 @@ const DEFAULT_SETTINGS = {
   enabled: true,
   triggerHeight: 8,       // Distance from top edge in pixels to trigger bar
   hideDelay: 450,          // Delay in ms before hiding after mouse leaves
-  theme: 'dark-glass',     // 'dark-glass' | 'modern-light' | 'amoled' | 'chrome'
+  theme: 'edge',           // 'edge' | 'dark-glass' | 'modern-light' | 'amoled' | 'chrome'
   openInNewTab: false,     // Open bookmarks in new tab by default
   showFavicons: true,      // Show website favicons
   showBookmarkUrl: false,  // Show bookmark URL tooltip on hover (disabled by default)
@@ -186,7 +186,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.type === 'CREATE_BOOKMARK') {
     const parentId = request.parentId ? String(request.parentId) : '1';
-    const title = request.title || 'New Bookmark';
+    const title = request.title || '新书签';
     const url = request.url;
 
     if (!url) {

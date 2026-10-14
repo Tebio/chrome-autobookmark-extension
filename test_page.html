@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SINARY AutoBookmark - Test & Installation Guide</title>
+  <title>AutoBookmark 智能书签栏 — 测试与安装指南</title>
   <style>
     :root {
       --bg: #0b0f19;
@@ -205,17 +205,17 @@
 </head>
 <body>
   <!-- Visual line at top edge demonstrating the trigger area -->
-  <div class="top-edge-indicator" title="Hover here to trigger the AutoBookmark bar!"></div>
+  <div class="top-edge-indicator" title="把鼠标移到这里即可触发 AutoBookmark 书签栏！"></div>
 
   <div class="container">
     <div class="badge">
       <img src="icons/icon16.png" style="width: 14px; height: 14px; border-radius: 3px;" alt="AutoBookmark">
-      <span>AutoBookmark • by sinary.org developers</span>
+      <span>AutoBookmark 智能书签栏</span>
     </div>
 
-    <h1>AutoBookmark Chrome Extension</h1>
+    <h1>AutoBookmark 智能书签栏</h1>
     <p class="lead">
-      Move your mouse to the <strong>very top edge of the screen</strong> to reveal your auto-hiding bookmarks bar! Crafted by the <a href="https://sinary.org" target="_blank" style="color: #38bdf8; text-decoration: none; font-weight: 600;">sinary.org</a> developer team.
+      将鼠标移到屏幕<strong>最顶部边缘</strong>，即可唤出自动隐藏的悬浮书签栏！
     </p>
 
     <!-- Supported Browsers Badge Grid -->
@@ -229,47 +229,45 @@
 
     <!-- Installation Steps Card -->
     <div class="card">
-      <h2>🚀 How to Install & Test on Any Chromium Browser</h2>
+      <h2>🚀 如何安装与测试</h2>
       <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">
-        To keep AutoBookmark 100% free without charging our users, we distribute directly via <strong>GitHub</strong> and the <strong>Microsoft Edge Add-ons Store</strong> (which installs seamlessly on Chrome and other Chromium browsers as well!).
+        本扩展通过 GitHub Release 分发。在 Chromium 内核浏览器中加载已解压的扩展即可使用。
       </p>
       <div class="steps">
         <div class="step-item">
           <div class="step-num">1</div>
           <div class="step-content">
-            Open your browser's extension manager:
+            打开浏览器扩展管理页面：
             <br>
-            <code>chrome://extensions</code> or <code>edge://extensions</code> or <code>brave://extensions</code>
+            <code>chrome://extensions</code> 或 <code>edge://extensions</code> 或 <code>brave://extensions</code>
           </div>
         </div>
 
         <div class="step-item">
           <div class="step-num">2</div>
           <div class="step-content">
-            Toggle ON <strong>Developer mode</strong> in the upper right corner.
+            在右上角开启 <strong>开发者模式</strong>。
           </div>
         </div>
 
         <div class="step-item">
           <div class="step-num">3</div>
           <div class="step-content">
-            Click the <strong>Load unpacked</strong> button in the top left.
+            点击左上角的 <strong>加载已解压的扩展程序</strong>。
           </div>
         </div>
 
         <div class="step-item">
           <div class="step-num">4</div>
           <div class="step-content">
-            Select the project root folder:
-            <br>
-            <code>AutoBookmark</code> (the folder containing <code>manifest.json</code>)
+            选择项目根目录（包含 <code>manifest.json</code> 的文件夹）。
           </div>
         </div>
 
         <div class="step-item">
           <div class="step-num">5</div>
           <div class="step-content">
-            <strong>That's it!</strong> Open any web page (or refresh this page), and hover your cursor within the top 8px of the screen to reveal the floating bookmark bar!
+            <strong>完成！</strong> 打开任意网页（或刷新本页），将鼠标移到屏幕顶部 8px 范围内即可看到悬浮书签栏。
           </div>
         </div>
       </div>
@@ -277,41 +275,41 @@
 
     <!-- Features Card -->
     <div class="card">
-      <h2>⚡ Extension Features</h2>
+      <h2>⚡ 主要功能</h2>
       <div class="feature-grid">
         <div class="feature-item">
-          <div class="feature-title">✨ Smart Hover Trigger</div>
-          <div class="feature-desc">Instantly slides down when mouse enters the top edge; smoothly hides when you move away.</div>
+          <div class="feature-title">✨ 智能悬停触发</div>
+          <div class="feature-desc">鼠标进入屏幕边缘时平滑滑出，离开后自动收回。</div>
         </div>
 
         <div class="feature-item">
-          <div class="feature-title">📁 Nested Folders</div>
-          <div class="feature-desc">Full dropdown navigation supporting multi-level folders and submenus.</div>
+          <div class="feature-title">📁 多级文件夹</div>
+          <div class="feature-desc">完整支持多层嵌套文件夹与子菜单导航。</div>
         </div>
 
         <div class="feature-item">
-          <div class="feature-title">📌 Pin Anytime</div>
-          <div class="feature-desc">Press <span class="shortcut-badge">Alt + B</span> or click the pin icon to keep the bar visible while working.</div>
+          <div class="feature-title">📌 一键固定</div>
+          <div class="feature-desc">按 <span class="shortcut-badge">Alt + B</span> 或点击固定按钮，让书签栏常驻显示。</div>
         </div>
 
         <div class="feature-item">
-          <div class="feature-title">🔍 Quick Search</div>
-          <div class="feature-desc">Instant fuzzy search across all your bookmarks right inside the floating bar.</div>
+          <div class="feature-title">🔍 快速搜索</div>
+          <div class="feature-desc">在悬浮书签栏内即时搜索所有书签。</div>
         </div>
 
         <div class="feature-item">
-          <div class="feature-title">🎨 4 Themes</div>
-          <div class="feature-desc">Dark Glass, Modern Light, AMOLED Black, and Classic Chrome styles.</div>
+          <div class="feature-title">🎨 5 款主题</div>
+          <div class="feature-desc">Edge 原生（默认）、深色玻璃、浅色、AMOLED 黑、经典 Chrome。</div>
         </div>
 
         <div class="feature-item">
-          <div class="feature-title">🛡️ Shadow DOM Isolated</div>
-          <div class="feature-desc">Zero CSS conflicts with any webpage you visit.</div>
+          <div class="feature-title">🛡️ Shadow DOM 隔离</div>
+          <div class="feature-desc">完全避免与访问网页的 CSS 发生冲突。</div>
         </div>
       </div>
 
       <div class="hover-demo-box">
-        <strong>Try it out:</strong> Move your mouse all the way to the top edge of this window!
+        <strong>试一试：</strong> 将鼠标移到浏览器窗口的最顶部边缘！
       </div>
     </div>
   </div>

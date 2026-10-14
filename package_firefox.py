@@ -22,7 +22,7 @@ if os.path.exists(unversioned_alias):
 # Firefox requires gecko ID and data_collection_permissions in browser_specific_settings
 manifest["browser_specific_settings"] = {
     "gecko": {
-        "id": "autobookmark@sinary.org",
+        "id": "autobookmark@tebio.fork",
         "strict_min_version": "140.0",
         "data_collection_permissions": {
             "required": ["none"]
@@ -51,17 +51,16 @@ with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:
         "popup.html",
         "popup.js",
         "popup.css",
-        "sinary-logo.svg",
     ]
     for f in files_to_include:
         if os.path.exists(f):
             zf.write(f, f.replace("\\", "/"))
-    
+
     # Include icons
     if os.path.exists("icons"):
         for root, _, files in os.walk("icons"):
             for file in files:
-                if file in ["icon16.png", "icon48.png", "icon64.png", "icon128.png", "sinary-icon.png"]:
+                if file in ["icon16.png", "icon48.png", "icon64.png", "icon128.png"]:
                     full_path = os.path.join(root, file)
                     arcname = f"icons/{file}"
                     zf.write(full_path, arcname)

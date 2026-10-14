@@ -1,11 +1,11 @@
-# AutoBookmark — by Sinary
+# AutoBookmark 智能书签栏
 
-> A smart, auto-hiding floating bookmark bar for **Chrome, Edge, Firefox, Brave, and Opera** crafted by the **[sinary.org](https://sinary.org/)** developer team.
+> 一个智能、自动隐藏的悬浮书签栏，支持 Chrome、Edge、Firefox、Brave、Opera 等现代桌面浏览器。
+> 本仓库为 [Tebio](https://github.com/Tebio) 基于原 AutoBookmark 项目的二次开发 / 汉化分支，已去除品牌推广内容，新增 **Edge 原生主题**，并针对触发卡顿、卡手问题进行了优化。
 
 <div align="center">
 
-[![Microsoft Edge Add-ons](https://img.shields.io/badge/Microsoft_Edge-Get_Extension-0078D7?style=for-the-badge&logo=microsoft-edge&logoColor=white)](https://microsoftedge.microsoft.com/addons/detail/autobookmark-%E2%80%94-by-sinary/khedapggmjjlinfojcjebhmecaaikojo)
-[![GitHub Release](https://img.shields.io/github/v/release/sinaryorg/chrome-autobookmark-extension?style=for-the-badge&color=10B981)](https://github.com/sinaryorg/chrome-autobookmark-extension/releases/latest)
+[![GitHub Release](https://img.shields.io/github/v/release/Tebio/chrome-autobookmark-extension?style=for-the-badge&color=10B981)](https://github.com/Tebio/chrome-autobookmark-extension/releases/latest)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
 <br/>
@@ -16,230 +16,192 @@
 
 ---
 
-## 🌐 Browser Compatibility
+## 🌐 浏览器兼容性
 
-AutoBookmark is built with cross-browser compatibility and runs natively across all modern desktop browsers:
+AutoBookmark 智能书签栏基于 Manifest V3 构建，可在以下现代桌面浏览器中运行：
 
-- ✅ **Google Chrome**
-- ✅ **Microsoft Edge**
-- ✅ **Mozilla Firefox**
-- ✅ **Opera & Opera GX**
-- ✅ **Brave Browser**
-- ✅ **Vivaldi**
-- ✅ **Arc Browser**
-
----
-
-## ✨ Features
-
-- **⚡ Hover-Activated Slide-in**: Move your cursor to your designated screen edge (Top, Bottom, Left, or Right) to reveal your bookmarks.
-- **🍃 Smooth Auto-Hide**: Slides away smoothly when you move your cursor back into the page content.
-- **🧭 4-Direction Edge Docking**: Choose between Top, Bottom, Left, or Right screen edge. Left and Right docking turns AutoBookmark into a vertical sidebar dock with full-height layout and horizontal flyout dropdowns.
-- **➕ 1-Click "Add Current Tab"**: Quickly bookmark the active webpage with a single click from the bar's header controls or inside any folder dropdown, complete with checkmark feedback and toast notifications.
-- **📂 "Open All in Tabs" for Folders**: Middle-click any folder or right-click to open all contained links simultaneously in new background tabs.
-- **🔀 Drag-and-Drop Organization**: Reorder bookmarks and folders on the fly with animated insertion guidelines and folder-drop targets in both horizontal and vertical modes.
-- **🖱️ Right-Click Context Menu**: Full in-place management — Open in New Tab, Bookmark Current Tab Here, Open All in Tabs, Edit Title/URL, Rename Folder, and Delete.
-- **✏️ In-Place Edit & Rename**: Update titles and URLs directly from the bar with sleek glassmorphic modal dialogs.
-- **📁 Multi-Level Folder Dropdowns**: Browse deep nested subfolders with seamless connected flyout portals.
-- **🔍 Connected Search with Bevel**: Instant bookmark search connected seamlessly to the navbar with a curved bevel fillet and glass highlight.
-- **📌 Pin Anytime**: Press <kbd>Alt + B</kbd> or click the 📌 pin button to keep the bar visible while working.
-- **🛡️ 100% Shadow DOM Isolated**: Injected with an open Shadow DOM root — zero CSS conflicts with any website.
-- **🎨 4 Curated Themes**: Dark Glass, Modern Light, AMOLED Black, and Classic Chrome.
-- **⚡ Privacy-First**: 100% local in-browser execution. No data is ever collected or transmitted.
+- ✅ Google Chrome
+- ✅ Microsoft Edge
+- ✅ Mozilla Firefox
+- ✅ Opera & Opera GX
+- ✅ Brave Browser
+- ✅ Vivaldi
+- ✅ Arc Browser
 
 ---
 
-## 📸 Preview & Screenshots
+## ✨ 主要功能
 
-### 1. Auto-Hiding Floating Bookmark Bar
-*Reveals your bookmarks and nested folders smoothly on hover, then gracefully hides away to preserve full-screen viewing space:*
-
-![AutoBookmark Floating Bar](icons/screenshot2_1280x800.png)
-
-### 2. Customization & Themes
-*Fine-tune hover proximity, auto-hide timing, toggle pin shortcut (<kbd>Alt + B</kbd>), and switch between 4 themes (Dark Glass, Modern Light, AMOLED Black, Classic Chrome):*
-
-![AutoBookmark Settings & Themes](icons/screenshot1_1280x800.png)
-
----
-
-## 🚀 How to Get AutoBookmark
-
-You can install AutoBookmark using either the official stores or directly from GitHub Releases:
-
-### Method 1: Official Browser Stores (Recommended — 1-Click Install & Auto-Updates)
-
-| Store | Recommended Browser | Status |
-| :--- | :--- | :--- |
-| **Microsoft Edge Add-ons** | Microsoft Edge | 🟢 **[Install from Edge Store](https://microsoftedge.microsoft.com/addons/detail/autobookmark-%E2%80%94-by-sinary/khedapggmjjlinfojcjebhmecaaikojo)** (Live) |
-| **Opera Add-ons** | Opera & Opera GX | In Review ([View Store](https://addons.opera.com)) |
-| **Mozilla Firefox Add-ons (AMO)** | Mozilla Firefox | 🟢 **[Install from Firefox Store](https://addons.mozilla.org/en-US/firefox/addon/autobookmark-by-sinary/)** (Live) |
-
-> [!NOTE]
-> **For Google Chrome users**: Google restricts direct 1-click webstore installs exclusively to its own Chrome Web Store. To use AutoBookmark in Chrome for free, use **Method 2 (Direct GitHub Release)** below — it takes only 10 seconds to load into `chrome://extensions` and runs with 100% native performance!
+- **⚡ 悬停即现**：将鼠标移到屏幕边缘（上 / 下 / 左 / 右）即可唤出书签栏。
+- **🍃 平滑自动隐藏**：鼠标离开书签区域后自动平滑收回，不占用页面空间。
+- **🧭 四向边缘停靠**：支持顶部、底部、左侧、右侧四种停靠方式；左右停靠时自动切换为竖向侧边栏。
+- **➕ 一键收藏当前页**：点击书签栏上的“+”按钮，即可将当前标签页加入书签栏。
+- **📂 文件夹批量打开**：中键点击文件夹或右键选择“全部在标签页中打开”，一次性打开文件夹内所有链接。
+- **🔀 拖拽整理**：自由拖拽书签 / 文件夹进行排序，也可以把书签拖入文件夹。
+- **🖱️ 右键菜单管理**：支持在新标签页打开、收藏当前页到此文件夹、编辑书签 / 重命名文件夹、删除书签 / 文件夹。
+- **✏️ 原地编辑**：直接在书签栏中修改书签名称、网址或文件夹名称。
+- **📁 多级文件夹**：无缝展开的子文件夹层级，方便浏览深层书签。
+- **🔍 实时搜索**：在书签栏或弹出窗口中即时搜索书签。
+- **📌 一键固定**：按 `Alt + B` 或点击固定按钮，让书签栏常驻显示。
+- **🛡️ Shadow DOM 隔离**：使用开放的 Shadow DOM 注入页面，避免与网页 CSS 冲突。
+- **🎨 5 款主题**：Edge 原生（默认）、深色玻璃、浅色、AMOLED 黑、经典 Chrome。
+- **⚡ 隐私优先**：完全本地运行，不收集、不上传任何数据。
 
 ---
 
-### Method 2: Direct GitHub Releases (No Store Required)
+## 🎨 Edge 原生主题
 
-Every release provides two dedicated packages tailored for specific browser engines:
+新版默认主题采用贴近 Microsoft Edge 原生的配色：
 
-👉 **[Download Latest GitHub Release](https://github.com/sinaryorg/chrome-autobookmark-extension/releases/latest)**
+- 书签栏背景：`#DDDFE2`
+- 文字颜色：`#373839`
+- 高亮 / 悬停颜色：Edge 风格蓝色 `#0B5CAD`
 
-#### 📦 For Chrome, Edge, Brave, Opera, Vivaldi (`AutoBookmark-v1.2.0.zip`)
-1. Download **`AutoBookmark-v1.2.0.zip`** from the latest release.
-2. Unzip `AutoBookmark-v1.2.0.zip` into a folder on your computer.
-3. Open your browser's extension page:
-   - **Chrome**: `chrome://extensions`
-   - **Edge**: `edge://extensions`
-   - **Brave**: `brave://extensions`
-   - **Opera**: `opera://extensions`
-4. Toggle ON **Developer mode** (top-right corner switch).
-5. Click **"Load unpacked"** (top-left) and select the extracted folder.
-
-#### 🦊 For Mozilla Firefox (`AutoBookmark-firefox-v1.2.0.zip`)
-1. Download **`AutoBookmark-firefox-v1.2.0.zip`** from the latest release.
-2. Open Firefox and navigate to:
-   ```text
-   about:debugging#/runtime/this-firefox
-   ```
-3. Click **"Load Temporary Add-on..."** (top-right).
-4. Select the downloaded `AutoBookmark-firefox-v1.2.0.zip` file directly (or extract and select its `manifest.json`).
-5. Done! The AutoBookmark bar is active immediately on Firefox.
+在扩展弹出窗口的「外观与位置」中即可一键切换。
 
 ---
 
-## 💡 Essential Pro Tip: Hide Your Browser's Default Bookmark Bar
+## 📸 预览
 
-To get the full immersive experience and **reclaim 100% of your vertical screen real estate**, turn off your browser's default static bookmark bar.
+### 1. 自动隐藏的悬浮书签栏
 
-AutoBookmark replaces the static bar by floating smoothly into view **only when you hover near your chosen screen edge (Top, Bottom, Left, or Right)**!
+悬停唤出，离开自动隐藏，保留完整的网页阅读空间：
 
-### ⚡ Quick Shortcut (All Browsers)
-Press **<kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>** (Windows / Linux) or **<kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd>** (macOS) to instantly toggle off the default bar.
+![悬浮书签栏](icons/screenshot2_1280x800.png)
 
-### 🛠️ Browser-Specific Step-by-Step Guide
+### 2. 设置面板与主题
 
-| Browser | How to Hide the Default Bookmark Bar |
+可自定义触发距离、自动隐藏延迟、固定快捷键 `Alt + B`，以及切换 5 款主题：
+
+![设置与主题](icons/screenshot1_1280x800.png)
+
+---
+
+## 🚀 如何安装
+
+### 方式一：从 GitHub Releases 下载（推荐，无需商店）
+
+👉 **[下载最新 Release](https://github.com/Tebio/chrome-autobookmark-extension/releases/latest)**
+
+#### 适用于 Chrome / Edge / Brave / Opera / Vivaldi（`AutoBookmark-v1.3.0.zip`）
+
+1. 下载最新 Release 中的 `AutoBookmark-v1.3.0.zip`。
+2. 将压缩包解压到本地文件夹。
+3. 打开浏览器扩展管理页面：
+   - Chrome：`chrome://extensions`
+   - Edge：`edge://extensions`
+   - Brave：`brave://extensions`
+   - Opera：`opera://extensions`
+4. 开启右上角「开发者模式」。
+5. 点击「加载已解压的扩展程序」，选择刚才解压的文件夹。
+
+#### 适用于 Mozilla Firefox（`AutoBookmark-firefox-v1.3.0.zip`）
+
+1. 下载对应 Firefox 包。
+2. 打开 Firefox 的 `about:debugging#/runtime/this-firefox`。
+3. 点击「临时加载附加组件」，选择 zip 包或其 `manifest.json`。
+
+---
+
+## 💡 小贴士：隐藏浏览器默认书签栏
+
+为了获得最沉浸的体验，建议关闭浏览器自带的静态书签栏，让 AutoBookmark 取而代之。
+
+### 快捷键（所有浏览器）
+
+Windows / Linux：`Ctrl + Shift + B`  
+macOS：`Cmd + Shift + B`
+
+### 各浏览器手动关闭
+
+| 浏览器 | 操作 |
 | :--- | :--- |
-| **Google Chrome** | Press <kbd>Ctrl+Shift+B</kbd>, or click `⋮` (Three dots) > **Bookmarks and lists** > uncheck **"Show bookmarks bar"**. |
-| **Microsoft Edge** | Press <kbd>Ctrl+Shift+B</kbd>, or click `...` (Three dots) > **Favorites** > click `...` at top > select **Hide favorites bar** > **Never**. |
-| **Mozilla Firefox** | Press <kbd>Ctrl+Shift+B</kbd>, or right-click any blank space in the tab bar > **Bookmarks Toolbar** > select **"Never Show"**. |
-| **Opera & Opera GX** | Press <kbd>Alt+P</kbd> (Settings) > search **"Bookmarks"** > toggle off **"Show bookmarks bar"**. |
-| **Brave Browser** | Press <kbd>Ctrl+Shift+B</kbd>, or go to **Settings** > **Appearance** > toggle off **"Show bookmarks bar"**. |
-
-Once hidden, simply glide your mouse cursor to your chosen edge of any page to summon your floating bookmarks on demand!
+| Google Chrome | `⋮` > 书签和清单 > 取消勾选「显示书签栏」 |
+| Microsoft Edge | `…` > 收藏夹 > 点击 `…` > 选择「隐藏收藏夹栏」>「从不」 |
+| Mozilla Firefox | 右键标签栏空白处 > 书签工具栏 > 「永不显示」 |
+| Opera / Opera GX | `Alt + P` > 搜索「书签」> 关闭「显示书签栏」 |
+| Brave | `Ctrl + Shift + B` 或 设置 > 外观 > 关闭「显示书签栏」 |
 
 ---
 
-## ⌨️ Keyboard Shortcuts
+## ⌨️ 快捷键
 
-| Shortcut | Action |
+| 快捷键 | 动作 |
 | :--- | :--- |
-| <kbd>Alt + B</kbd> | Toggle / Pin the AutoBookmark bar |
+| `Alt + B` | 显示 / 固定悬浮书签栏 |
 
 ---
 
-## ⚙️ Extension Settings
+## ⚙️ 扩展设置
 
-Click the **AutoBookmark** icon in your browser toolbar to customize:
-- **Trigger Proximity**: Adjust sensitivity (2px to 25px from the top edge).
-- **Auto-Hide Delay**: Configure hide duration (100ms to 1500ms).
-- **Appearance Themes**: Switch between Dark Glass, Modern Light, AMOLED Black, and Classic Chrome.
-- **Position**: Dock along the Top, Bottom, Left, or Right screen edge (Left/Right activates vertical sidebar mode).
-- **Behavior**: Choose whether bookmarks open in the current tab or a new tab, toggle website favicons, and toggle bookmark URL previews on hover.
+点击浏览器工具栏中的 AutoBookmark 图标即可设置：
 
----
-
-## 🛠️ Tech Stack & Architecture
-
-- **Manifest V3**: Pure modern extension standards using background service workers and declarative storage.
-- **Shadow DOM**: Complete style and layout encapsulation from the host webpage.
-- **Native Browser APIs**: `chrome.bookmarks`, `chrome.storage.sync`, and `chrome.commands`.
+- **触发距离**：2px ~ 25px，控制鼠标离边缘多远时触发显示。
+- **自动隐藏延迟**：100ms ~ 1500ms，控制离开后多久隐藏。
+- **外观主题**：Edge 原生、深色玻璃、浅色、AMOLED 黑、经典 Chrome。
+- **停靠位置**：顶部、底部、左侧、右侧。
+- **行为**：在新标签页 / 当前页打开书签、显示网站图标、悬停显示书签网址。
 
 ---
 
-## 🌐 Sinary Ecosystem
+## 🛠️ 技术栈
 
-AutoBookmark is developed and maintained by the **[sinary.org](https://sinary.org/)** developer team — building privacy-focused apps, digital tools, and browser extensions.
-
-- **Website**: [https://sinary.org](https://sinary.org)
-- **GitHub**: [https://github.com/sinaryorg](https://github.com/sinaryorg)
-- **Privacy Policy**: [PRIVACY_POLICY.md](PRIVACY_POLICY.md)
-- **Roadmap & Next Update**: [ROADMAP.md](ROADMAP.md)
+- **Manifest V3**：现代扩展标准，使用 Service Worker 与声明式存储。
+- **Shadow DOM**：完整样式与布局隔离，避免影响宿主网页。
+- **原生浏览器 API**：`chrome.bookmarks`、`chrome.storage.sync`、`chrome.commands`。
 
 ---
 
-## 📦 Version History & Release Notes
+## ⚡ 本分支主要改动
 
-### 🚀 Version 1.2.0 *(Current Release)*
+### v1.3.0
 
-Version 1.2.0 introduces full 4-direction edge docking, allowing users to anchor AutoBookmark to any edge of the screen as a horizontal bar or vertical sidebar:
-
-- **🧭 4-Direction Edge Docking (Top, Bottom, Left, Right)**:
-  - Choose between Top, Bottom, Left, or Right dock positions from the settings popup.
-  - Seamless slide-in transitions with tailored `translate` transforms for each edge.
-  - Directional hover trigger zones along the corresponding screen edge.
-- **📐 Vertical Sidebar Dock Mode (`Left` / `Right`)**:
-  - Full-height (`100vh`) dock with a streamlined `210px` vertical sidebar layout.
-  - Vertical bookmark scroll track with thin custom scrollbars.
-  - Full-width integrated quick search bar positioned neatly below the header controls.
-- **✨ Horizontal Flyout Dropdowns & Search**:
-  - Folder dropdowns and search results fly out horizontally flush against the sidebar dock towards the screen center with zero clipping.
-  - Vertical boundary clamping ensures menus always stay comfortably within the viewport.
-- **🎯 Vertical Drag-and-Drop Organization**:
-  - Main bar track reordering automatically adapts to vertical coordinates (`clientY`) with illuminated horizontal drop indicators.
-- **➕ One-Click "Add Current Tab"**:
-  - Dedicated quick-add button in the bar's header controls with animated checkmark feedback and toast notification.
-  - Quick action button inside folder dropdowns to bookmark the current page into any specific folder.
-  - Right-click context menu option: **"Bookmark Current Tab Here"** on any folder.
-- **📂 "Open All in Tabs" for Folders**:
-  - Right-click context menu option: **"Open All in Tabs (N)"** displaying link count.
-  - Middle-click (<kbd>auxclick</kbd>) any folder chip or subfolder to open all bookmarks in background tabs.
+- **🌏 全面汉化**：所有界面文案（弹出窗口、右键菜单、模态框、Toast、工具提示等）均已转为简体中文。
+- **🚫 去除广告与品牌推广**：移除上游版本中的品牌按钮、开发者卡片、页脚链接及品牌图标资源。
+- **🎨 新增 Edge 原生主题**：默认采用 Edge 风格配色（背景 `#DDDFE2` / 文字 `#373839`）。
+- **🚀 触发性能优化**：
+  - 使用 `requestAnimationFrame` 节流全局 `mousemove`，降低 CPU 占用。
+  - 避免每次鼠标移动都重置隐藏定时器。
+  - 显示后增加宽限期，防止快速滑过时立即隐藏。
+  - 搜索输入防抖并丢弃过期响应。
+  - 拖拽期间延迟书签重渲染，拖拽结束后再刷新，避免卡顿。
+- **🔗 更新源指向本 Fork**：版本检查与下载链接均指向 `Tebio/chrome-autobookmark-extension`。
 
 ---
 
-### 📦 Version 1.1.0
+## 🗺️ 路线图
 
-Version 1.1.0 is a major update adding full in-place bookmark management, drag-and-drop reordering, and multi-level subfolder navigation:
-
-- **🔀 Drag-and-Drop Bookmark Organization**:
-  - Reorder bookmarks directly on the floating bar, inside folder dropdowns, and within nested submenus.
-  - Drop bookmarks onto folders to organize them instantly.
-  - Live animated drop indicator guidelines indicating exact insertion points.
-  - Accurate index boundary math ensuring proper placement when moving items to the top, middle, or bottom of folders.
-- **🖱️ Custom Right-Click Context Menu**:
-  - Modern glassmorphic context menu for bookmarks, folders, and subfolders.
-  - **Open in New Tab**: Quickly open any bookmark in a new background or foreground tab.
-  - **Edit Bookmark / Rename Folder**: Launch centered glassmorphic modal editors to update bookmark titles and URLs or folder names.
-  - **Delete Bookmark / Delete Folder**: Safe deletion with confirmation dialogs (including recursive folder cleanup for non-empty folders).
-- **📁 Multi-Level Subfolder Navigation**:
-  - Deep nested subfolder support with seamless flyout portals.
-  - Connected concave fillet wings matching parent dropdowns with zero gap.
-  - Smart hover de-escalation: hovering over regular bookmarks or bar controls automatically dismisses open folder dropdowns.
-- **🛡️ Stacking & Z-Index Architecture**:
-  - Stratified Shadow DOM z-index hierarchy ensuring context menus and modals always render strictly above all submenus and dropdowns.
-  - Prevents menus from hiding behind subfolder portals or closing prematurely during interaction.
+详见 [ROADMAP.md](ROADMAP.md)。
 
 ---
 
-### 🌟 Version 1.0.0 *(Initial Release)*
+## 📄 隐私政策
 
-- Hover-activated auto-hiding floating bookmark bar.
-- Shadow DOM isolation preventing styling conflicts with host websites.
-- 4 curated themes (Dark Glass, Modern Light, AMOLED Black, Classic Chrome).
-- Connected search bar with curved bevel fillet highlight.
-- Quick pin shortcut (<kbd>Alt + B</kbd>) and toolbar pin button.
-- Cross-browser support for Chrome, Edge, Firefox, Brave, Opera, and Vivaldi.
+详见 [PRIVACY_POLICY.md](PRIVACY_POLICY.md)。
 
 ---
 
-## 🗺️ Roadmap & Upcoming Features
+## 📦 更新日志
 
-We are continually improving AutoBookmark! Check out **[ROADMAP.md](ROADMAP.md)** for planned future updates (v1.3.0+), including folder item count badges, in-place "+ New Folder" creation, custom accent color pickers, and global spotlight search shortcuts!
+### v1.3.0（当前版本）
+
+- 全面汉化、去除广告、新增 Edge 原生主题、优化触发卡顿与卡手问题。
+
+### v1.2.0
+
+- 支持四向边缘停靠与竖向侧边栏模式。
+- 支持拖拽排序、文件夹批量打开、右键菜单管理。
+
+### v1.1.0
+
+- 新增书签编辑 / 文件夹重命名、删除确认、多级子文件夹。
+
+### v1.0.0
+
+- 初始版本：自动隐藏悬浮书签栏、Shadow DOM 隔离、多主题、跨浏览器支持。
 
 ---
 
-## 📄 License
+## 📄 许可证
 
-MIT License. Open source and free to use.
+MIT License。开源且免费使用。

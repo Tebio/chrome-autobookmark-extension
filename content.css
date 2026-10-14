@@ -369,31 +369,6 @@
   display: none !important;
 }
 
-/* Sinary Brand Button */
-.ab-sinary-brand-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 5px;
-  margin-right: 2px;
-  opacity: 0.85;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-  flex-shrink: 0;
-  text-decoration: none;
-}
-.ab-sinary-brand-btn:hover {
-  opacity: 1;
-  transform: scale(1.08);
-}
-.ab-sinary-icon {
-  width: 18px;
-  height: 18px;
-  border-radius: 4px;
-  object-fit: contain;
-}
-
 /* Navigation / Action Buttons */
 .ab-action-btn {
   display: inline-flex;
@@ -1640,4 +1615,156 @@
   border-color: rgba(0, 0, 0, 0.12);
   color: #0f172a;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+   5. Edge Native Theme (背景 #DDDFE2 / 文字 #373839)
+   ========================================================================== */
+.ab-theme-edge {
+  background: #DDDFE2;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.06);
+  color: #373839;
+}
+.ab-position-bottom .ab-theme-edge {
+  border-bottom: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
+}
+.ab-position-left .ab-theme-edge {
+  border-bottom: none;
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 4px 0 16px rgba(0, 0, 0, 0.12);
+}
+.ab-position-right .ab-theme-edge {
+  border-bottom: none;
+  border-left: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.12);
+}
+
+.ab-theme-edge .ab-action-btn:hover {
+  background: rgba(0, 0, 0, 0.07);
+}
+.ab-theme-edge .ab-action-btn.ab-active {
+  color: #0b5cad;
+  background: rgba(11, 92, 173, 0.12);
+}
+.ab-theme-edge .ab-divider {
+  background: rgba(0, 0, 0, 0.14);
+}
+.ab-theme-edge .ab-scroll-btn {
+  background: #ecedef;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #373839;
+}
+.ab-theme-edge .ab-scroll-btn:hover {
+  background: #0b5cad;
+  color: #ffffff;
+}
+.ab-theme-edge .ab-item:hover,
+.ab-theme-edge .ab-item.ab-open {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.04);
+}
+
+/* Edge 主题的下拉 / 子菜单 / 搜索结果面板 */
+.ab-theme-edge.ab-dropdown-portal,
+.ab-theme-edge .ab-dropdown,
+.ab-theme-edge .ab-submenu,
+.ab-theme-edge.ab-submenu,
+.ab-theme-edge .ab-search-results-modal {
+  --ab-dropdown-bg: #DDDFE2;
+  --ab-dropdown-border: rgba(0, 0, 0, 0.1);
+  background: var(--ab-dropdown-bg);
+  border: 1px solid var(--ab-dropdown-border);
+  box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.22), 0 4px 10px -2px rgba(0, 0, 0, 0.1);
+  color: #373839;
+}
+.ab-theme-edge .ab-dropdown-item:hover,
+.ab-theme-edge .ab-search-results-modal .ab-dropdown-item:hover {
+  background: rgba(0, 0, 0, 0.07);
+}
+.ab-theme-edge .ab-dropdown-item.ab-submenu-active {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: #0b5cad !important;
+}
+.ab-theme-edge .ab-portal-scroll::-webkit-scrollbar-thumb,
+.ab-theme-edge .ab-submenu-scroll::-webkit-scrollbar-thumb,
+.ab-theme-edge.ab-submenu .ab-submenu-scroll::-webkit-scrollbar-thumb,
+.ab-theme-edge .ab-search-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.22);
+}
+
+/* Edge 主题的搜索框 */
+.ab-theme-edge .ab-search-input {
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(0, 0, 0, 0.14);
+  color: #373839;
+}
+.ab-theme-edge .ab-search-input:focus {
+  border-color: #0b5cad;
+  box-shadow: 0 0 0 2px rgba(11, 92, 173, 0.22);
+}
+.ab-theme-edge .ab-search-icon-btn {
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #373839;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+.ab-theme-edge .ab-search-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: #0b5cad;
+  color: #0b5cad;
+}
+
+/* Edge 主题的右键菜单与模态框（主题类直接挂在元素自身上） */
+.ab-theme-edge.ab-context-menu,
+.ab-theme-edge .ab-modal,
+.ab-theme-edge.ab-modal {
+  background: #ecedef;
+  color: #373839;
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.ab-theme-edge .ab-context-item:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #0b5cad;
+}
+.ab-theme-edge .ab-context-separator {
+  background: rgba(0, 0, 0, 0.08);
+}
+.ab-theme-edge .ab-modal-close-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+.ab-theme-edge .ab-modal-item-preview {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+.ab-theme-edge .ab-form-input {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(0, 0, 0, 0.16);
+  color: #373839;
+}
+.ab-theme-edge .ab-btn-secondary {
+  background: rgba(0, 0, 0, 0.06);
+}
+.ab-theme-edge .ab-btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+.ab-theme-edge .ab-dropdown-add-btn {
+  border-color: rgba(0, 0, 0, 0.16);
+  background: rgba(255, 255, 255, 0.45);
+  color: #373839;
+}
+.ab-theme-edge .ab-dropdown-add-btn:hover {
+  background: rgba(11, 92, 173, 0.08);
+  border-color: rgba(11, 92, 173, 0.4);
+  color: #0b5cad;
+}
+.ab-theme-edge.ab-toast,
+.ab-theme-edge .ab-toast {
+  background: #ecedef;
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #373839;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }

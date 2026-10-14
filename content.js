@@ -9,7 +9,7 @@
     enabled: true,
     triggerHeight: 8,
     hideDelay: 450,
-    theme: 'dark-glass',
+    theme: 'edge',
     openInNewTab: false,
     showFavicons: true,
     showBookmarkUrl: false,
@@ -35,6 +35,8 @@
   let isContextMenuOpen = false;
   let isModalOpen = false;
   let activeContextTarget = null;
+  let pendingBookmarkRefresh = false;
+  let lastShowTime = 0;
 
   // Create Shadow Host
   const host = document.createElement('div');
@@ -58,24 +60,15 @@
   barContainer.className = 'ab-bar-container';
 
   const bar = document.createElement('div');
-  bar.className = 'ab-bar';
+  bar.className = 'ab-bar ab-theme-edge';
 
-  // Left action buttons: Sinary Brand, Pin, Divider
+  // Left action buttons: Add Current Tab, Pin, Divider
   const leftActions = document.createElement('div');
   leftActions.style.cssText = 'display: flex; align-items: center; gap: 2px; flex-shrink: 0;';
 
-  const sinaryLogoBtn = document.createElement('a');
-  sinaryLogoBtn.className = 'ab-sinary-brand-btn';
-  sinaryLogoBtn.href = 'https://sinary.org';
-  sinaryLogoBtn.target = '_blank';
-  sinaryLogoBtn.title = 'SINARY - Your All-in-One Digital Platform (sinary.org)';
-  sinaryLogoBtn.innerHTML = `
-    <img src="${chrome.runtime.getURL('icons/icon48.png')}" class="ab-sinary-icon" alt="SINARY" />
-  `;
-
   const addCurrentTabBtn = document.createElement('button');
   addCurrentTabBtn.className = 'ab-action-btn ab-add-tab-btn';
-  addCurrentTabBtn.title = 'Bookmark current tab to bar';
+  addCurrentTabBtn.title = '收藏当前标签页到书签栏';
   addCurrentTabBtn.innerHTML = `
     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
       <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
@@ -108,14 +101,13 @@
 
   const pinBtn = document.createElement('button');
   pinBtn.className = 'ab-action-btn';
-  pinBtn.title = 'Pin bookmark bar (Alt+B)';
+  pinBtn.title = '固定书签栏 (Alt+B)';
   pinBtn.innerHTML = `
     <svg class="ab-icon-svg" viewBox="0 0 24 24">
       <path d="M16 12V4H17V2H7V4H8V12L6 14V16H11V22L12 23L13 22V16H18V14L16 12Z"/>
     </svg>
   `;
 
-  leftActions.appendChild(sinaryLogoBtn);
   leftActions.appendChild(addCurrentTabBtn);
   leftActions.appendChild(pinBtn);
 
@@ -130,12 +122,12 @@
   const scrollLeftBtn = document.createElement('button');
   scrollLeftBtn.className = 'ab-scroll-btn ab-scroll-left';
   scrollLeftBtn.innerHTML = '‹';
-  scrollLeftBtn.title = 'Scroll left';
+  scrollLeftBtn.title = '向左滚动';
 
   const scrollRightBtn = document.createElement('button');
   scrollRightBtn.className = 'ab-scroll-btn ab-scroll-right';
   scrollRightBtn.innerHTML = '›';
-  scrollRightBtn.title = 'Scroll right';
+  scrollRightBtn.title = '向右滚动';
 
   const itemsTrack = document.createElement('div');
   itemsTrack.className = 'ab-items-track';
@@ -157,7 +149,7 @@
 
   const searchIconBtn = document.createElement('button');
   searchIconBtn.className = 'ab-search-icon-btn';
-  searchIconBtn.title = 'Search bookmarks';
+  searchIconBtn.title = '搜索书签';
   searchIconBtn.innerHTML = `
     <svg class="ab-icon-svg" viewBox="0 0 24 24">
       <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
@@ -167,7 +159,7 @@
   const searchInput = document.createElement('input');
   searchInput.type = 'text';
   searchInput.className = 'ab-search-input';
-  searchInput.placeholder = 'Search bookmarks...';
+  searchInput.placeholder = '搜索书签...';
 
   const searchResultsModal = document.createElement('div');
   searchResultsModal.className = 'ab-search-results-modal';
@@ -386,7 +378,7 @@
   // Format sleek, readable tooltip
   function formatBookmarkTooltip(title, url) {
     const cleanUrl = getCleanDisplayUrl(url);
-    if (!title || title.trim() === 'Untitled' || title.trim() === '') {
+    if (!title || title.trim() === 'Untitled' || title.trim() === '未命名' || title.trim() === '') {
       return cleanUrl;
     }
     return `${title.trim()}\n${cleanUrl}`;
@@ -406,9 +398,20 @@
     clearTimeout(hideTimer);
     if (!isBarVisible) {
       isBarVisible = true;
+      lastShowTime = Date.now();
       barContainer.classList.add('ab-visible');
       updateScrollArrows();
     }
+  }
+
+  function forceHideBar() {
+    clearTimeout(hideTimer);
+    closeAllDropdowns();
+    closeSearch();
+    isBarVisible = false;
+    isMouseInsideBar = false;
+    isMouseInsideDropdown = false;
+    barContainer.classList.remove('ab-visible');
   }
 
   function scheduleHide() {
@@ -478,11 +481,19 @@
     try {
       chrome.runtime.sendMessage(payload, (res) => {
         if (chrome.runtime.lastError) {
-          console.warn('Failed to move bookmark:', chrome.runtime.lastError);
+          console.warn('移动书签失败:', chrome.runtime.lastError);
         }
       });
     } catch (err) {
-      console.warn('Move bookmark error:', err);
+      console.warn('移动书签出错:', err);
+    }
+  }
+
+  // Called from every dragend handler: flush bookmark refresh deferred during drag
+  function onLocalDragEnd() {
+    if (pendingBookmarkRefresh) {
+      pendingBookmarkRefresh = false;
+      fetchBookmarks();
     }
   }
 
@@ -534,7 +545,7 @@
     shadow.appendChild(modalBackdrop);
 
     const isFolder = !!itemData.isFolder;
-    const titleText = isFolder ? 'Rename Folder' : 'Edit Bookmark';
+    const titleText = isFolder ? '重命名文件夹' : '编辑书签';
 
     modalContainer.innerHTML = `
       <div class="ab-modal-header">
@@ -545,22 +556,22 @@
           </svg>
           <span>${titleText}</span>
         </h3>
-        <button type="button" class="ab-modal-close-btn" title="Close (Esc)">✕</button>
+        <button type="button" class="ab-modal-close-btn" title="关闭 (Esc)">✕</button>
       </div>
       <form class="ab-modal-body">
         <div class="ab-form-group">
-          <label class="ab-form-label">Name</label>
+          <label class="ab-form-label">名称</label>
           <input type="text" class="ab-form-input ab-edit-name-input" value="${escapeHtml(itemData.title || '')}" spellcheck="false" autocomplete="off" />
         </div>
         ${!isFolder ? `
         <div class="ab-form-group">
-          <label class="ab-form-label">URL</label>
+          <label class="ab-form-label">网址</label>
           <input type="text" class="ab-form-input ab-edit-url-input" value="${escapeHtml(itemData.url || '')}" spellcheck="false" autocomplete="off" />
         </div>
         ` : ''}
         <div class="ab-modal-actions">
-          <button type="button" class="ab-btn ab-btn-secondary ab-modal-cancel">Cancel</button>
-          <button type="submit" class="ab-btn ab-btn-primary ab-modal-save">Save</button>
+          <button type="button" class="ab-btn ab-btn-secondary ab-modal-cancel">取消</button>
+          <button type="submit" class="ab-btn ab-btn-primary ab-modal-save">保存</button>
         </div>
       </form>
     `;
@@ -614,10 +625,10 @@
     shadow.appendChild(modalBackdrop);
 
     const isFolder = !!itemData.isFolder;
-    const titleText = isFolder ? 'Delete Folder' : 'Delete Bookmark';
+    const titleText = isFolder ? '删除文件夹' : '删除书签';
     const promptText = isFolder
-      ? 'Are you sure you want to delete this folder and all bookmarks inside it?'
-      : 'Are you sure you want to delete this bookmark?';
+      ? '确定要删除此文件夹及其中包含的所有书签吗？'
+      : '确定要删除此书签吗？';
 
     modalContainer.innerHTML = `
       <div class="ab-modal-header">
@@ -630,17 +641,17 @@
           </svg>
           <span>${titleText}</span>
         </h3>
-        <button type="button" class="ab-modal-close-btn" title="Close (Esc)">✕</button>
+        <button type="button" class="ab-modal-close-btn" title="关闭 (Esc)">✕</button>
       </div>
       <div class="ab-modal-body">
         <p class="ab-modal-prompt">${promptText}</p>
         <div class="ab-modal-item-preview">
           <span style="opacity:0.6;margin-right:4px;">${isFolder ? '📁' : '🔗'}</span>
-          <span>${escapeHtml(itemData.title || (isFolder ? 'Folder' : 'Bookmark'))}</span>
+          <span>${escapeHtml(itemData.title || (isFolder ? '文件夹' : '书签'))}</span>
         </div>
         <div class="ab-modal-actions">
-          <button type="button" class="ab-btn ab-btn-secondary ab-modal-cancel">Cancel</button>
-          <button type="button" class="ab-btn ab-btn-danger ab-modal-confirm-delete">Delete</button>
+          <button type="button" class="ab-btn ab-btn-secondary ab-modal-cancel">取消</button>
+          <button type="button" class="ab-btn ab-btn-danger ab-modal-confirm-delete">删除</button>
         </div>
       </div>
     `;
@@ -690,7 +701,7 @@
   // Open multiple URLs in background tabs
   function openMultipleTabs(urls) {
     if (!urls || urls.length === 0) {
-      showToast('Folder is empty');
+      showToast('文件夹为空');
       return;
     }
     chrome.runtime.sendMessage({
@@ -698,14 +709,14 @@
       urls: urls
     }, (res) => {
       if (res && res.success) {
-        showToast(`Opened ${res.opened} tab${res.opened === 1 ? '' : 's'}`);
+        showToast(`已打开 ${res.opened} 个标签页`);
       }
     });
   }
 
   // Create bookmark in specific folder
   function createBookmarkInFolder(folderId, customTitle, customUrl) {
-    const title = customTitle || document.title || 'New Bookmark';
+    const title = customTitle || document.title || '新书签';
     const url = customUrl || window.location.href;
 
     chrome.runtime.sendMessage({
@@ -716,10 +727,10 @@
     }, (res) => {
       if (res && res.success) {
         const folderObj = findBookmarkById(folderId);
-        const folderName = folderObj && folderObj.title ? `"${folderObj.title}"` : 'Bookmarks Bar';
-        showToast(`Bookmarked to ${folderName}`);
+        const folderName = folderObj && folderObj.title ? `"${folderObj.title}"` : '书签栏';
+        showToast(`已收藏到 ${folderName}`);
       } else {
-        showToast(res?.error || 'Failed to add bookmark');
+        showToast(res?.error || '添加书签失败');
       }
     });
   }
@@ -766,7 +777,7 @@
           <rect x="2" y="3" width="13" height="13" rx="2" ry="2"/>
           <path d="M5 21h14a2 2 0 0 0 2-2V7"/>
         </svg>
-        <span>Open All in Tabs (${childLinks.length})</span>
+        <span>全部在标签页中打开 (${childLinks.length})</span>
       `;
       if (childLinks.length > 0) {
         openAllItem.addEventListener('click', (ev) => {
@@ -786,7 +797,7 @@
           <line x1="12" y1="8" x2="12" y2="14"/>
           <line x1="9" y1="11" x2="15" y2="11"/>
         </svg>
-        <span>Bookmark Current Tab Here</span>
+        <span>收藏当前标签页到此文件夹</span>
       `;
       addHereContextItem.addEventListener('click', (ev) => {
         ev.stopPropagation();
@@ -809,7 +820,7 @@
           <polyline points="15 3 21 3 21 9"/>
           <line x1="10" y1="14" x2="21" y2="3"/>
         </svg>
-        <span>Open in New Tab</span>
+        <span>在新标签页中打开</span>
       `;
       openTabItem.addEventListener('click', (ev) => {
         ev.stopPropagation();
@@ -826,7 +837,7 @@
         <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
         <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
       </svg>
-      <span>${isFolder ? 'Rename Folder...' : 'Edit Bookmark...'}</span>
+      <span>${isFolder ? '重命名文件夹...' : '编辑书签...'}</span>
     `;
     editItem.addEventListener('click', (ev) => {
       ev.stopPropagation();
@@ -849,7 +860,7 @@
           <line x1="10" y1="11" x2="10" y2="17"/>
           <line x1="14" y1="11" x2="14" y2="17"/>
         </svg>
-        <span>${isFolder ? 'Delete Folder' : 'Delete Bookmark'}</span>
+        <span>${isFolder ? '删除文件夹' : '删除书签'}</span>
       `;
       deleteItem.addEventListener('click', (ev) => {
         ev.stopPropagation();
@@ -974,7 +985,7 @@
     folderElement.classList.add('ab-open');
 
     dropdownPortal.innerHTML = '';
-    dropdownPortal.className = `ab-dropdown-portal ab-theme-${settings.theme || 'dark-glass'} ab-show`;
+    dropdownPortal.className = `ab-dropdown-portal ab-theme-${settings.theme || 'edge'} ab-show`;
 
     const pos = settings.barPosition || 'top';
     if (pos === 'bottom') {
@@ -1010,7 +1021,7 @@
       <svg class="ab-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M12 5v14M5 12h14"/>
       </svg>
-      <span>Bookmark current tab here</span>
+      <span>收藏当前标签页到此处</span>
     `;
     addHereBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -1019,7 +1030,7 @@
         <svg class="ab-add-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
           <polyline points="20 6 9 17 4 12"/>
         </svg>
-        <span>Added to "${folder.title || 'Folder'}"</span>
+        <span>已收藏到"${folder.title || '文件夹'}"</span>
       `;
       createBookmarkInFolder(folder.id);
       setTimeout(() => {
@@ -1031,7 +1042,7 @@
     if (!folder.children || folder.children.length === 0) {
       const emptyMsg = document.createElement('div');
       emptyMsg.className = 'ab-empty-msg';
-      emptyMsg.textContent = 'Folder is empty';
+      emptyMsg.textContent = '文件夹为空';
       scrollContainer.appendChild(emptyMsg);
     } else {
       folder.children.forEach(child => {
@@ -1197,7 +1208,7 @@
 
     const titleSpan = document.createElement('span');
     titleSpan.className = 'ab-title';
-    titleSpan.textContent = item.title || 'Untitled';
+    titleSpan.textContent = item.title || '未命名';
     a.appendChild(titleSpan);
 
     a.addEventListener('mouseenter', () => {
@@ -1233,6 +1244,7 @@
       a.classList.remove('ab-dragging');
       hideDropIndicator();
       clearFolderDragHighlights();
+      onLocalDragEnd();
       scheduleHide();
     });
 
@@ -1285,7 +1297,7 @@
     const folderRect = folderDiv.getBoundingClientRect();
 
     const submenu = document.createElement('div');
-    submenu.className = `ab-submenu ab-theme-${settings.theme || 'dark-glass'} ab-show`;
+    submenu.className = `ab-submenu ab-theme-${settings.theme || 'edge'} ab-show`;
     submenu.dataset.level = String(level);
     submenu.style.zIndex = `${2147483625 + level * 2}`;
 
@@ -1300,7 +1312,7 @@
     if (!childFolder.children || childFolder.children.length === 0) {
       const empty = document.createElement('div');
       empty.className = 'ab-empty-msg';
-      empty.textContent = 'Empty folder';
+      empty.textContent = '空文件夹';
       scrollContainer.appendChild(empty);
     } else {
       childFolder.children.forEach(subChild => {
@@ -1507,7 +1519,7 @@
 
       const span = document.createElement('span');
       span.className = 'ab-title';
-      span.textContent = child.title || 'Untitled';
+      span.textContent = child.title || '未命名';
       a.appendChild(span);
 
       a.addEventListener('mouseenter', () => {
@@ -1604,7 +1616,7 @@
           if (urls.length > 0) {
             openMultipleTabs(urls);
           } else {
-            showToast('Folder is empty');
+            showToast('文件夹为空');
           }
         }
       });
@@ -1623,7 +1635,7 @@
 
       const span = document.createElement('span');
       span.className = 'ab-title';
-      span.textContent = child.title || 'Folder';
+      span.textContent = child.title || '文件夹';
       folderDiv.appendChild(span);
 
       const arrow = document.createElement('span');
@@ -1739,7 +1751,7 @@
     div.draggable = true;
     div.dataset.bookmarkId = folder.id;
     div.dataset.parentId = folder.parentId || barFolderId;
-    div.title = `${folder.title || 'Folder'} (${(folder.children || []).length} items)\nClick to open`;
+    div.title = `${folder.title || '文件夹'}（共 ${(folder.children || []).length} 项）\n点击展开`;
 
     const folderIcon = document.createElement('span');
     folderIcon.className = 'ab-folder-icon';
@@ -1752,7 +1764,7 @@
 
     const titleSpan = document.createElement('span');
     titleSpan.className = 'ab-title';
-    titleSpan.textContent = folder.title || 'Bookmarks';
+    titleSpan.textContent = folder.title || '书签';
     div.appendChild(titleSpan);
 
     const arrowSpan = document.createElement('span');
@@ -1787,6 +1799,7 @@
       div.classList.remove('ab-dragging');
       hideDropIndicator();
       clearFolderDragHighlights();
+      onLocalDragEnd();
       scheduleHide();
     });
 
@@ -1799,7 +1812,7 @@
         if (urls.length > 0) {
           openMultipleTabs(urls);
         } else {
-          showToast('Folder is empty');
+          showToast('文件夹为空');
         }
       }
     });
@@ -1887,7 +1900,7 @@
     if (allItems.length === 0) {
       const emptySpan = document.createElement('span');
       emptySpan.className = 'ab-empty-msg';
-      emptySpan.textContent = 'No bookmarks on bar';
+      emptySpan.textContent = '书签栏暂无书签';
       itemsTrack.appendChild(emptySpan);
       return;
     }
@@ -2215,19 +2228,30 @@
     }
   }, true);
 
+  let searchDebounceTimer = null;
+  let searchRequestSeq = 0;
+
   searchInput.addEventListener('input', () => {
     const q = searchInput.value.trim().toLowerCase();
     if (!q) {
+      clearTimeout(searchDebounceTimer);
+      searchRequestSeq++;
       searchResultsModal.classList.remove('ab-show');
       searchResultsModal.innerHTML = '';
       return;
     }
 
-    try {
-      chrome.runtime.sendMessage({ type: 'SEARCH_BOOKMARKS', query: q }, (res) => {
-        if (chrome.runtime.lastError) return;
+    // Debounce keystrokes to avoid flooding the service worker on every char
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(() => {
+      const seq = ++searchRequestSeq;
+      try {
+        chrome.runtime.sendMessage({ type: 'SEARCH_BOOKMARKS', query: q }, (res) => {
+          if (chrome.runtime.lastError) return;
+          // Drop stale responses if the user kept typing
+          if (seq !== searchRequestSeq) return;
 
-        searchResultsModal.innerHTML = '';
+          searchResultsModal.innerHTML = '';
 
         // Seamless connecting concave fillet wings
         const wingLeft = document.createElement('div');
@@ -2245,7 +2269,7 @@
         if (!res || !res.results || res.results.length === 0) {
           const emptyMsg = document.createElement('div');
           emptyMsg.className = 'ab-empty-msg';
-          emptyMsg.textContent = 'No bookmarks found';
+          emptyMsg.textContent = '未找到相关书签';
           scrollContainer.appendChild(emptyMsg);
         } else {
           res.results.forEach(item => {
@@ -2299,8 +2323,9 @@
         }
 
         searchResultsModal.classList.add('ab-show');
-      });
-    } catch (err) {}
+        });
+      } catch (err) {}
+    }, 150);
   });
 
   // Pin Button listener
@@ -2314,8 +2339,29 @@
     settings = Object.assign({}, settings, newSettings);
     closeAllSubmenus();
 
+    // When disabled: hide the bar immediately and stop the trigger zone from
+    // intercepting page clicks along the screen edge
+    triggerZone.style.pointerEvents = settings.enabled ? 'auto' : 'none';
+    if (!settings.enabled) {
+      forceHideBar();
+    }
+
     // Apply Theme
-    bar.className = `ab-bar ab-theme-${settings.theme || 'dark-glass'}`;
+    const themeClass = `ab-theme-${settings.theme || 'edge'}`;
+    bar.className = `ab-bar ${themeClass}`;
+
+    // Context menu / modal backdrop / toast live directly under the shadow
+    // root, so the theme class must be applied to them as well (preserving
+    // their visible state if open)
+    [
+      [contextMenu, 'ab-context-menu'],
+      [modalBackdrop, 'ab-modal-backdrop'],
+      [toastNotification, 'ab-toast'],
+      [searchResultsModal, 'ab-search-results-modal']
+    ].forEach(([el, base]) => {
+      const wasShown = el.classList.contains('ab-show');
+      el.className = `${base} ${themeClass}${wasShown ? ' ab-show' : ''}`;
+    });
 
     // Apply Position
     barContainer.classList.remove('ab-position-bottom', 'ab-position-left', 'ab-position-right');
@@ -2362,7 +2408,7 @@
 
     // Update active dropdown portal theme if open
     if (activeFolderItem && dropdownPortal.classList.contains('ab-show')) {
-      dropdownPortal.className = `ab-dropdown-portal ab-theme-${settings.theme || 'dark-glass'} ab-show`;
+      dropdownPortal.className = `ab-dropdown-portal ab-theme-${settings.theme || 'edge'} ab-show`;
       if (pos === 'bottom') {
         dropdownPortal.classList.add('ab-portal-bottom');
       } else if (pos === 'left') {
@@ -2391,9 +2437,25 @@
     scheduleHide();
   });
 
-  // Global mousemove detection for smooth trigger near edge
+  // Global mousemove detection for smooth trigger near edge.
+  // Throttled with requestAnimationFrame so it runs at most once per frame,
+  // and the hide timer is only re-armed on state transitions instead of
+  // being torn down and recreated on every single mouse move.
+  let mouseMoveRafId = null;
+  let lastMouseEvent = null;
+  let wasPastBar = false;
+
   window.addEventListener('mousemove', (e) => {
-    if (!settings.enabled) return;
+    lastMouseEvent = e;
+    if (mouseMoveRafId !== null) return;
+    mouseMoveRafId = requestAnimationFrame(() => {
+      mouseMoveRafId = null;
+      handleEdgeMouseMove(lastMouseEvent);
+    });
+  }, { passive: true });
+
+  function handleEdgeMouseMove(e) {
+    if (!settings.enabled || !e) return;
     const triggerPx = settings.triggerHeight || 8;
     const pos = settings.barPosition || 'top';
     let isAtTriggerEdge = false;
@@ -2414,13 +2476,27 @@
     }
 
     if (isAtTriggerEdge) {
+      wasPastBar = false;
       showBar();
-    } else if (isBarVisible && !isMouseInsideBar && !isMouseInsideDropdown && !isPinned && !isDraggingBookmark && !isContextMenuOpen && !isModalOpen) {
-      if (isPastBar) {
-        scheduleHide();
-      }
+      return;
     }
-  }, { passive: true });
+
+    if (isBarVisible && !isMouseInsideBar && !isMouseInsideDropdown && !isPinned && !isDraggingBookmark && !isContextMenuOpen && !isModalOpen) {
+      if (isPastBar) {
+        // Grace period right after the bar slides in, so a fast swipe
+        // across the bar does not instantly hide it again
+        if (Date.now() - lastShowTime < 350) return;
+        if (!wasPastBar) {
+          wasPastBar = true;
+          scheduleHide();
+        }
+      } else {
+        wasPastBar = false;
+      }
+    } else {
+      wasPastBar = false;
+    }
+  }
 
   // Load Bookmarks & Settings initially
   function fetchBookmarks(retries = 2) {
@@ -2447,6 +2523,9 @@
       chrome.storage.sync.get('settings', (data) => {
         if (!chrome.runtime.lastError && data && data.settings) {
           applySettings(data.settings);
+        } else {
+          // Storage not ready yet (fresh install race): apply local defaults
+          applySettings({});
         }
       });
     } catch (err) {}
@@ -2469,7 +2548,13 @@
     if (message.type === 'SETTINGS_UPDATED') {
       applySettings(message.settings);
     } else if (message.type === 'BOOKMARKS_UPDATED') {
-      fetchBookmarks();
+      // Defer re-render while dragging: rebuilding the DOM mid-drag would
+      // destroy the dragged element and cause visible stutter
+      if (isDraggingBookmark) {
+        pendingBookmarkRefresh = true;
+      } else {
+        fetchBookmarks();
+      }
     } else if (message.type === 'TOGGLE_PIN') {
       togglePin();
     }

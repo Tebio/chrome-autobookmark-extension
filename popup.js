@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     enabled: true,
     triggerHeight: 8,
     hideDelay: 450,
-    theme: 'dark-glass',
+    theme: 'edge',
     openInNewTab: false,
     showFavicons: true,
     showBookmarkUrl: false,
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${title.trim()}\n${cleanUrl}`;
   }
 
-  // Load Settings directly from chrome.storage (prevents "Receiving end does not exist")
+  // Load Settings directly from chrome.storage
   chrome.storage.sync.get('settings', (data) => {
     if (chrome.runtime.lastError) {
       console.warn('AutoBookmark storage load warning:', chrome.runtime.lastError.message);
@@ -118,11 +118,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (showBookmarkUrl) showBookmarkUrl.checked = shouldShowUrl;
 
     // Theme radio & apply to popup UI
-    applyPopupTheme(s.theme || 'dark-glass');
-    const themeRadio = document.querySelector(`input[name="theme"][value="${s.theme || 'dark-glass'}"]`);
+    applyPopupTheme(s.theme || 'edge');
+    const themeRadio = document.querySelector(`input[name="theme"][value="${s.theme || 'edge'}"]`);
     if (themeRadio) themeRadio.checked = true;
 
-    // Position (Only applies to floating bar on web pages; does not change popup position)
+    // Position
     segmentBtns.forEach(btn => {
       if (btn.dataset.pos === (s.barPosition || 'top')) {
         btn.classList.add('active');
@@ -145,46 +145,47 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (sumAppearance) {
       const themeLabels = {
-        'dark-glass': 'Dark Glass',
-        'modern-light': 'Light',
+        'edge': 'Edge 原生',
+        'dark-glass': '深色玻璃',
+        'modern-light': '浅色',
         'amoled': 'AMOLED',
-        'chrome': 'Classic'
+        'chrome': '经典'
       };
-      const themeName = themeLabels[s.theme || 'dark-glass'] || 'Dark Glass';
-      const posLabels = { 'top': 'Top', 'bottom': 'Bottom', 'left': 'Left', 'right': 'Right' };
-      const posName = posLabels[s.barPosition || 'top'] || 'Top';
+      const themeName = themeLabels[s.theme || 'edge'] || 'Edge 原生';
+      const posLabels = { 'top': '顶部', 'bottom': '底部', 'left': '左侧', 'right': '右侧' };
+      const posName = posLabels[s.barPosition || 'top'] || '顶部';
       sumAppearance.textContent = `${themeName} • ${posName}`;
     }
     if (sumBehavior) {
       const activeOptions = [];
-      if (s.openInNewTab) activeOptions.push('New Tab');
-      if (s.showFavicons !== false) activeOptions.push('Favicons');
-      if (s.showBookmarkUrl) activeOptions.push('URLs');
-      sumBehavior.textContent = activeOptions.length > 0 ? activeOptions.join(' • ') : 'Standard';
+      if (s.openInNewTab) activeOptions.push('新标签页');
+      if (s.showFavicons !== false) activeOptions.push('显示图标');
+      if (s.showBookmarkUrl) activeOptions.push('悬停地址');
+      sumBehavior.textContent = activeOptions.length > 0 ? activeOptions.join(' • ') : '默认';
     }
   }
 
   // Apply Theme directly to the popup window
   function applyPopupTheme(themeName) {
-    const validThemes = ['dark-glass', 'modern-light', 'amoled', 'chrome'];
-    const theme = validThemes.includes(themeName) ? themeName : 'dark-glass';
-    document.body.classList.remove('theme-dark-glass', 'theme-modern-light', 'theme-amoled', 'theme-chrome');
+    const validThemes = ['edge', 'dark-glass', 'modern-light', 'amoled', 'chrome'];
+    const theme = validThemes.includes(themeName) ? themeName : 'edge';
+    document.body.classList.remove('theme-dark-glass', 'theme-modern-light', 'theme-amoled', 'theme-chrome', 'theme-edge');
     document.body.classList.add(`theme-${theme}`);
   }
 
   function updateStatus(enabled) {
     if (enabled) {
       statusDot.classList.remove('inactive');
-      statusText.textContent = 'Active on all web pages';
+      statusText.textContent = '已在所有网页启用';
     } else {
       statusDot.classList.add('inactive');
-      statusText.textContent = 'AutoBookmark is disabled';
+      statusText.textContent = 'AutoBookmark 已禁用';
     }
   }
 
   // Save Settings directly into chrome.storage
   function save() {
-    const theme = document.querySelector('input[name="theme"]:checked')?.value || 'dark-glass';
+    const theme = document.querySelector('input[name="theme"]:checked')?.value || 'edge';
     const activePosBtn = document.querySelector('.segment-btn.active');
     const barPosition = activePosBtn ? activePosBtn.dataset.pos : 'top';
 
@@ -204,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
     applyPopupTheme(theme);
     updateAccordionSummaries(currentSettings);
 
-    // Save directly to storage
     chrome.storage.sync.set({ settings: currentSettings }, () => {
       if (chrome.runtime.lastError) {
         console.warn('AutoBookmark storage save warning:', chrome.runtime.lastError.message);
@@ -221,12 +221,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!currentItem) return;
       const isOpen = currentItem.classList.contains('open');
 
-      // Close other accordions for a compact, neat single-view
       accordionItems.forEach(item => {
         if (item !== currentItem) item.classList.remove('open');
       });
 
-      // Toggle clicked item
       currentItem.classList.toggle('open', !isOpen);
     });
   });
@@ -265,18 +263,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Pin Toggle Button (safely catches any connection error if active tab cannot receive messages)
+  // Pin Toggle Button
   pinToggleBtn.addEventListener('click', async () => {
     try {
       const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (activeTab && activeTab.id && activeTab.url && !activeTab.url.startsWith('chrome://') && !activeTab.url.startsWith('edge://')) {
-        await chrome.tabs.sendMessage(activeTab.id, { type: 'TOGGLE_PIN' }).catch(() => {
-          // Tab does not have content script running; silently handled
-        });
+        await chrome.tabs.sendMessage(activeTab.id, { type: 'TOGGLE_PIN' }).catch(() => {});
       }
-    } catch (e) {
-      // Silently handled
-    }
+    } catch (e) {}
     window.close();
   });
 
@@ -300,14 +294,14 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       chrome.bookmarks.search(q, (results) => {
         if (chrome.runtime.lastError) {
-          popupSearchResults.innerHTML = '<div style="padding:8px;font-size:11px;color:#64748b;text-align:center;">Search error</div>';
+          popupSearchResults.innerHTML = '<div style="padding:8px;font-size:11px;color:#64748b;text-align:center;">搜索出错</div>';
           popupSearchResults.classList.add('active');
           return;
         }
 
         const links = (results || []).filter(item => item.url).slice(0, 10);
         if (links.length === 0) {
-          popupSearchResults.innerHTML = '<div style="padding:8px;font-size:11px;color:#64748b;text-align:center;">No bookmarks found</div>';
+          popupSearchResults.innerHTML = '<div style="padding:8px;font-size:11px;color:#64748b;text-align:center;">未找到书签</div>';
           popupSearchResults.classList.add('active');
           return;
         }
@@ -381,47 +375,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function checkLatestRelease() {
       try {
-        const res = await fetch('https://api.github.com/repos/sinaryorg/chrome-autobookmark-extension/releases/latest', {
+        const res = await fetch('https://api.github.com/repos/Tebio/chrome-autobookmark-extension/releases/latest', {
           headers: { 'Accept': 'application/vnd.github.v3+json' }
         });
 
         if (!res.ok) {
-          if (statusText) statusText.textContent = 'Up to date with GitHub';
+          if (statusText) statusText.textContent = '已同步至 GitHub 最新版';
           return;
         }
 
         const data = await res.json();
         const latestTag = data.tag_name || currentV;
-        const releaseUrl = data.html_url || 'https://github.com/sinaryorg/chrome-autobookmark-extension/releases';
+        const releaseUrl = data.html_url || 'https://github.com/Tebio/chrome-autobookmark-extension/releases';
 
         if (actionBtn) actionBtn.href = releaseUrl;
 
         const cmp = compareSemVer(latestTag, currentV);
         if (cmp > 0) {
-          // New release available
           if (statusText) {
-            statusText.textContent = `🚀 Update ${latestTag} available!`;
+            statusText.textContent = `🚀 新版本 ${latestTag} 可用`;
             statusText.className = 'version-status update-available';
           }
           if (actionBtn) {
-            actionBtn.textContent = 'Update ↗';
+            actionBtn.textContent = '更新 ↗';
             actionBtn.classList.add('has-update');
-            actionBtn.title = `Get ${latestTag} from GitHub Releases`;
+            actionBtn.title = `从 GitHub Releases 获取 ${latestTag}`;
           }
         } else {
-          // Up to date
           if (statusText) {
-            statusText.textContent = '🟢 Latest release installed';
+            statusText.textContent = '🟢 已是最新版本';
             statusText.className = 'version-status up-to-date';
           }
           if (actionBtn) {
-            actionBtn.textContent = 'Releases ↗';
+            actionBtn.textContent = '发布 ↗';
             actionBtn.classList.remove('has-update');
-            actionBtn.title = 'View release notes on GitHub';
+            actionBtn.title = '在 GitHub 查看发布说明';
           }
         }
       } catch (err) {
-        if (statusText) statusText.textContent = `GitHub Release ${currentV}`;
+        if (statusText) statusText.textContent = `GitHub 版本 ${currentV}`;
       }
     }
 
@@ -431,4 +423,3 @@ document.addEventListener('DOMContentLoaded', () => {
   initVersionChecker();
 
 });
-

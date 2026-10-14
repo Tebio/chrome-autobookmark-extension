@@ -107,6 +107,27 @@ body.theme-chrome {
   --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
+/* 5. Edge Native Theme (#DDDFE2 / #373839) */
+body.theme-edge {
+  --bg-primary: #DDDFE2;
+  --bg-secondary: #ecedef;
+  --bg-card: #ecedef;
+  --bg-hover: rgba(0, 0, 0, 0.06);
+  --accent: #0b5cad;
+  --accent-gradient: linear-gradient(135deg, #0b5cad 0%, #2d8cf0 100%);
+  --text-primary: #373839;
+  --text-secondary: #5a5c5e;
+  --text-muted: #6f7173;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --border-focus: #0b5cad;
+  --slider-bg: #c2c4c7;
+  --control-bg: #e1e3e6;
+  --badge-bg: rgba(11, 92, 173, 0.08);
+  --badge-border: rgba(11, 92, 173, 0.2);
+  --badge-color: #0b5cad;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -160,30 +181,6 @@ body {
   letter-spacing: -0.2px;
   color: var(--text-primary);
   line-height: 1.2;
-}
-
-.sinary-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  text-decoration: none;
-  font-size: 11px;
-  color: var(--accent);
-  font-weight: 600;
-  margin-top: 2px;
-  transition: opacity 0.15s ease;
-}
-
-.sinary-badge:hover {
-  opacity: 0.8;
-  text-decoration: underline;
-}
-
-.sinary-badge-icon {
-  width: 12px;
-  height: 12px;
-  object-fit: contain;
-  border-radius: 2px;
 }
 
 /* Toggle Switch */
@@ -603,8 +600,8 @@ input:checked + .slider::before {
 /* Theme Selection Cards */
 .theme-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
 }
 
 .theme-card {
@@ -670,6 +667,14 @@ input:checked + .slider::before {
   background: #35363a;
 }
 
+.theme-preview.edge {
+  background: #DDDFE2;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+.theme-preview.edge .bar-sample {
+  background: #373839;
+}
+
 .theme-name {
   font-size: 10.5px;
   color: var(--text-secondary);
@@ -716,65 +721,6 @@ input:checked + .slider::before {
   background: var(--bg-card);
   color: var(--accent);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-/* Sinary Developer Attribution Card */
-.sinary-dev-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--badge-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  padding: 10px 12px;
-  transition: all 0.25s ease;
-}
-
-.sinary-card-logo {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
-  border-radius: 4px;
-  flex-shrink: 0;
-}
-
-.sinary-card-content {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 0;
-}
-
-.sinary-card-title {
-  font-size: 11.5px;
-  color: var(--text-primary);
-}
-
-.sinary-card-title strong {
-  color: var(--accent);
-}
-
-.sinary-card-desc {
-  font-size: 10px;
-  color: var(--text-muted);
-}
-
-.sinary-visit-btn {
-  padding: 4px 8px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-primary);
-  background: rgba(56, 189, 248, 0.12);
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  border-radius: 4px;
-  text-decoration: none;
-  flex-shrink: 0;
-  transition: all 0.15s ease;
-}
-
-.sinary-visit-btn:hover {
-  background: rgba(56, 189, 248, 0.25);
-  color: #ffffff;
 }
 
 /* Header version badge */
@@ -931,25 +877,6 @@ input:checked + .slider::before {
   box-shadow: 0 0 6px #ef4444;
 }
 
-.footer-links {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.sinary-footer-link {
-  color: var(--accent);
-  text-decoration: none;
-  font-size: 11px;
-  font-weight: 600;
-  transition: opacity 0.15s ease;
-}
-
-.sinary-footer-link:hover {
-  opacity: 0.8;
-  text-decoration: underline;
-}
-
 .btn-text {
   background: transparent;
   border: none;
@@ -1004,17 +931,6 @@ body.theme-modern-light .search-item:hover {
   background: #f1f5f9;
 }
 
-body.theme-modern-light .sinary-visit-btn {
-  background: rgba(2, 132, 199, 0.1);
-  border-color: rgba(2, 132, 199, 0.25);
-  color: #0284c7;
-}
-
-body.theme-modern-light .sinary-visit-btn:hover {
-  background: #0284c7;
-  color: #ffffff;
-}
-
 body.theme-modern-light .btn-text {
   color: #64748b;
 }
@@ -1033,5 +949,55 @@ body.theme-amoled .segment-btn.active {
 body.theme-chrome .segment-btn.active {
   background: #35363a;
   color: #8ab4f8;
+}
+
+/* Edge Native theme specific refinements */
+body.theme-edge .theme-preview.edge {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+body.theme-edge .segment-btn.active {
+  background: #ffffff;
+  color: #0b5cad;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+body.theme-edge .search-box {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+body.theme-edge .search-box input {
+  color: #373839;
+}
+
+body.theme-edge .search-box input::placeholder {
+  color: #6f7173;
+}
+
+body.theme-edge .search-results-list {
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+body.theme-edge .search-results-list::before {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+body.theme-edge .search-item {
+  color: #373839;
+}
+
+body.theme-edge .search-item:hover {
+  background: #f1f5f9;
+}
+
+body.theme-edge .btn-text {
+  color: #6f7173;
+}
+
+body.theme-edge .btn-text:hover {
+  color: #373839;
 }
 
