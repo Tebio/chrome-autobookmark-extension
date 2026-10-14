@@ -393,6 +393,20 @@
   }
 
   // Show / Hide Functions
+  // 显隐动画期间 backdrop-filter 采样错位保护（Chrome 已知问题）：
+  // barContainer 以 translateY(-100%) -> 0 做滑入动画，transform 移动毛玻璃元素时
+  // 模糊采样区域基于合成层旧坐标，不跟随元素；页面加载初期甚至会采样到页面
+  // 底部内容（表现为"漏出底部"）。动画期间挂 ab-animating 由 CSS 摘除模糊，
+  // 落定后恢复，与滚动期间的 ab-scrolling 同一机制。
+  let backdropGuardTimer = 0;
+  function guardBackdropDuringAnim() {
+    barContainer.classList.add('ab-animating');
+    clearTimeout(backdropGuardTimer);
+    backdropGuardTimer = setTimeout(() => {
+      barContainer.classList.remove('ab-animating');
+    }, 280);
+  }
+
   function showBar() {
     if (!settings.enabled) return;
     clearTimeout(hideTimer);
@@ -400,6 +414,7 @@
       isBarVisible = true;
       lastShowTime = Date.now();
       barContainer.classList.add('ab-visible');
+      guardBackdropDuringAnim();
       updateScrollArrows();
     }
   }
@@ -411,6 +426,7 @@
     isBarVisible = false;
     isMouseInsideBar = false;
     isMouseInsideDropdown = false;
+    guardBackdropDuringAnim();
     barContainer.classList.remove('ab-visible');
   }
 
@@ -422,6 +438,7 @@
         closeAllDropdowns();
         closeSearch();
         isBarVisible = false;
+        guardBackdropDuringAnim();
         barContainer.classList.remove('ab-visible');
       }
     }, settings.hideDelay || 450);
